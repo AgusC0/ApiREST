@@ -1,22 +1,36 @@
-# Python
+# === Python / FastAPI ===
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *.log
 *.sqlite3
+*.db
 
 # Entorno virtual
 venv/
 .env
+.env*
 
-# IDEs
+# === Node / Next.js ===
+node_modules/
+.next/
+out/
+build/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# === Archivos de log ===
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Configuración de IDEs ===
 .vscode/
 .idea/
 
-# Archivos del sistema
+# === Archivos del sistema ===
 .DS_Store
 Thumbs.db
-
-# FastAPI/uvicorn
-*.db
