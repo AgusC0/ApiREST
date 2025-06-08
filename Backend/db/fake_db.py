@@ -63,10 +63,19 @@ productos = [
 
 # Lista simulada de categorías
 categorias = [
-    Categoria(id=1, descripcion="Periféricos"),
-    Categoria(id=2, descripcion="Accesorios")
+    Categoria(
+        id=1,
+        nombre="Periféricos",
+        descripcion="Periféricos de computadora",
+        is_active=True,
+    ),
+    Categoria(
+        id=2,
+        nombre="Monitores",
+        descripcion="Monitores de computadora",
+        is_active=True,
+    )
 ]
-
 # Lista simulada de ventas
 ventas = [
     Venta(

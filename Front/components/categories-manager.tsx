@@ -21,11 +21,10 @@ import { Plus, Edit, Trash2, Search } from "lucide-react"
 
 interface Category {
   id: number
-  name: string
-  description: string
+  nombre: string
+  descripcion: string
   is_active: boolean
-  created_at: string
-  products_count?: number
+  count_productos?: number
 }
 
 export default function CategoriesManager() {
@@ -35,9 +34,9 @@ export default function CategoriesManager() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    is_active: true,
+    nombre : "",
+    descripcion: "",
+    is_active: true
   })
 
   useEffect(() => {
@@ -115,9 +114,9 @@ export default function CategoriesManager() {
 
   const resetForm = () => {
     setFormData({
-      name: "",
-      description: "",
-      is_active: true,
+      nombre: "",
+      descripcion: "",
+      is_active: true
     })
     setEditingCategory(null)
   }
@@ -125,8 +124,8 @@ export default function CategoriesManager() {
   const openEditDialog = (category: Category) => {
     setEditingCategory(category)
     setFormData({
-      name: category.name,
-      description: category.description,
+      nombre: category.nombre,
+      descripcion: category.descripcion,
       is_active: category.is_active,
     })
     setIsDialogOpen(true)
@@ -134,8 +133,8 @@ export default function CategoriesManager() {
 
   const filteredCategories = categories.filter(
     (category) =>
-      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.description.toLowerCase().includes(searchTerm.toLowerCase()),
+      category.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      category.descripcion.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   if (isLoading) {
@@ -185,21 +184,21 @@ export default function CategoriesManager() {
                 </Label>
                 <Input
                   id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.nombre}
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                   required
                   className="bg-gray-800/50 border-cyan-400/50 text-white"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description" className="text-cyan-300">
+                <Label htmlFor="descripcion" className="text-cyan-300">
                   Descripción
                 </Label>
                 <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  id="descripcion"
+                  value={formData.descripcion}
+                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                   required
                   className="bg-gray-800/50 border-cyan-400/50 text-white"
                   rows={3}
@@ -264,11 +263,11 @@ export default function CategoriesManager() {
               <TableBody>
                 {filteredCategories.map((category) => (
                   <TableRow key={category.id} className="border-cyan-400/20 hover:bg-gray-700/30">
-                    <TableCell className="text-white font-medium">{category.name}</TableCell>
-                    <TableCell className="text-gray-300 max-w-xs truncate">{category.description}</TableCell>
+                    <TableCell className="text-white font-medium">{category.nombre}</TableCell>
+                    <TableCell className="text-gray-300 max-w-xs truncate">{category.descripcion}</TableCell>
                     <TableCell>
                       <span className="px-2 py-1 rounded-full text-xs bg-purple-500/20 text-purple-400 border border-purple-500/30">
-                        {category.products_count || 0} productos
+                        {category.count_productos || 0} productos
                       </span>
                     </TableCell>
                     <TableCell>
