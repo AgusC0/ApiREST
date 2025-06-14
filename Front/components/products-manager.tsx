@@ -51,7 +51,10 @@ interface Product {
 
 interface Category {
   id: number
+  nombre: string
   descripcion: string
+  is_active: boolean
+  count_productos: number
 }
 
 export default function ProductsManager() {
@@ -191,7 +194,7 @@ export default function ProductsManager() {
     }
   }
 
-  const saveNewCategory = async (descripcion: string) => {
+const saveNewCategory = async (nombre: string) => {
   const token = getToken()
   if (!token) return
   try {
@@ -201,10 +204,14 @@ export default function ProductsManager() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ descripcion }),
+      body: JSON.stringify({
+        nombre: nombre,
+        descripcion: "Agregada automáticamente desde frontend",
+        is_active: true,
+      }),
     })
     if (response.ok) {
-      fetchCategories() 
+      fetchCategories()
     } else {
       console.error("No se pudo guardar la nueva categoría.")
     }
@@ -329,15 +336,15 @@ export default function ProductsManager() {
                       )}
                       {categories
                         .filter((cat) =>
-                          cat.descripcion.toLowerCase().includes(categorySearch.toLowerCase())
+                          cat.nombre.toLowerCase().includes(categorySearch.toLowerCase())
                         )
                         .map((category) => (
                           <SelectItem
-                            key={category.id}
-                            value={category.id.toString()}
+                            key={category.nombre}
+                            value={category.nombre}
                             className="text-white"
                           >
-                            {category.descripcion}
+                            {category.nombre} ({category.count_productos})
                           </SelectItem>
                         ))}
                       <SelectItem value="other" className="text-white italic">
@@ -474,62 +481,67 @@ export default function ProductsManager() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredProducts.map((product) => (
-                  <TableRow key={product.id} className="border-cyan-400/20 hover:bg-gray-700/30">
-                    <TableCell>
-                      <div>
-                        <div className="text-white font-medium">{product.nombre}</div>
-                        <div className="text-gray-400 text-sm truncate max-w-xs">{product.descripcion}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-gray-300">{product.categoria_producto}</TableCell>
-                    <TableCell className="text-green-400 font-medium">${product.precio}</TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          product.stock > 10
-                            ? "bg-green-500/20 text-green-400"
-                            : product.stock > 0
+                {(Array.isArray(filteredProducts) ? filteredProducts : [])
+                  .filter((product) => product !== undefined && product !== null)
+                  .map((product) => (
+                    <TableRow
+                      key={product.id ?? Math.random()}
+                      className="border-cyan-400/20 hover:bg-gray-700/30"
+                    >
+                      <TableCell>
+                        <div>
+                          <div className="text-white font-medium">{product.nombre ?? "Sin nombre"}</div>
+                          <div className="text-gray-400 text-sm truncate max-w-xs">{product.descripcion ?? "-"}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-gray-300">{product.categoria_producto ?? "-"}</TableCell>
+                      <TableCell className="text-green-400 font-medium">${product.precio ?? 0}</TableCell>
+                      <TableCell>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            product.stock > 10
+                              ? "bg-green-500/20 text-green-400"
+                              : product.stock > 0
                               ? "bg-yellow-500/20 text-yellow-400"
                               : "bg-red-500/20 text-red-400"
-                        }`}
-                      >
-                        {product.stock}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          product.is_active
-                            ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                            : "bg-red-500/20 text-red-400 border border-red-500/30"
-                        }`}
-                      >
-                        {product.is_active ? "Activo" : "Inactivo"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openEditDialog(product)}
-                          className="border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10"
+                          }`}
                         >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDelete(product.id)}
-                          className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                          {product.stock ?? 0}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            product.is_active
+                              ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                              : "bg-red-500/20 text-red-400 border border-red-500/30"
+                          }`}
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                          {product.is_active ? "Activo" : "Inactivo"}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openEditDialog(product)}
+                            className="border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDelete(product.id)}
+                            className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </div>

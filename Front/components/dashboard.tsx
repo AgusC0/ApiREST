@@ -8,13 +8,12 @@ import UsersManager from "./users-manager"
 import ProductsManager from "./products-manager"
 import CategoriesManager from "./categories-manager"
 import SalesManager from "./sales-manager"
-import DownloadsManager from "./downloads-manager"
 
 interface DashboardProps {
   onLogout: () => void
 }
 
-type ActiveSection = "overview" | "users" | "products" | "categories" | "sales" | "downloads"
+type ActiveSection = "overview" | "users" | "products" | "categories" | "sales" 
 
 export default function Dashboard({ onLogout }: DashboardProps) {
   const [activeSection, setActiveSection] = useState<ActiveSection>("overview")
@@ -30,8 +29,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
     { id: "users" as const, label: "Usuarios", icon: Users },
     { id: "products" as const, label: "Productos", icon: Package },
     { id: "categories" as const, label: "Categorías", icon: FolderOpen },
-    { id: "sales" as const, label: "Ventas", icon: ShoppingCart },
-    { id: "downloads" as const, label: "Descargas", icon: Download },
+    { id: "sales" as const, label: "Ventas", icon: ShoppingCart }
   ]
 
   const renderContent = () => {
@@ -44,8 +42,6 @@ export default function Dashboard({ onLogout }: DashboardProps) {
         return <CategoriesManager />
       case "sales":
         return <SalesManager />
-      case "downloads":
-        return <DownloadsManager />
       default:
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

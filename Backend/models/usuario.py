@@ -1,32 +1,23 @@
-from pydantic import BaseModel, EmailStr, SecretStr, Field, field_validator
-from typing import Optional
-from fastapi import HTTPException 
-from enum import Enum
+from sqlalchemy import Column, Integer, String, Boolean, Enum
+from db.database import Base
+import enum
 
-
-class RolUser(str, Enum):
+class RolUser(str, enum.Enum):
     Cliente = "Cliente"
     Administrador = "Administrador"
 
-class Usuario(BaseModel):
-    id: int
-    nombre: str
-    apellido: str
-    email: EmailStr
-    password: SecretStr
-    pais: str
-    ciudad: str
-    direccion: str
-    telefono: str
-    rol: RolUser
-    is_active: bool
-    imagen: Optional[str] = None
+class Usuario(Base):
+    __tablename__ = "usuarios"
 
-    @field_validator("password")
-    def password_valido(cls, v):    
-        password = v.get_secret_value() 
-        if len(password) < 8:
-            raise HTTPException(status_code=400, detail="La password tiene que tener 8 caracteres")
-        if sum(c.isupper() for c in password) < 1:
-            raise HTTPException(status_code=400, detail="La password tiene que tener al menos una letra mayúscula")
-        return v
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100))
+    apellido = Column(String(100))
+    email = Column(String(150), unique=True, index=True)
+    password = Column(String(255))
+    pais = Column(String(100))
+    ciudad = Column(String(100))
+    direccion = Column(String(255))
+    telefono = Column(String(50))
+    rol = Column(Enum(RolUser))
+    is_active = Column(Boolean)
+    imagen = Column(String(255), nullable=True)

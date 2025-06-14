@@ -1,14 +1,8 @@
-from typing import Optional
-from pydantic import BaseModel, Field
+from sqlalchemy import Column, String, Boolean
+from db.database import Base
 
-class CategoriaBase(BaseModel):
-    nombre: str
-    descripcion: str
-    is_active: bool
-
-class CategoriaCreate(CategoriaBase):
-    pass
-
-class Categoria(CategoriaBase):
-    id: int
-    count_productos: Optional[int] = 0
+class Categoria(Base):
+    __tablename__ = "categorias"
+    nombre = Column(String(100), primary_key=True)
+    descripcion = Column(String(255))
+    is_active = Column(Boolean)

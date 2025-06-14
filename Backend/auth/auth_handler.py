@@ -1,8 +1,7 @@
-from datetime import datetime, timedelta
-from jwt import encode, decode
+from jwt import encode, decode, ExpiredSignatureError, InvalidTokenError
 from fastapi import HTTPException
 from core.config import settings
-
+from datetime import datetime, timedelta
 
 def crear_token(data: dict) -> str:
     data_copy = data.copy()
@@ -12,5 +11,7 @@ def crear_token(data: dict) -> str:
 def validar_token(token: str) -> dict:
     try:
         return decode(token, settings.secret_key, algorithms=[settings.algorithm])
-    except:
-        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido o mal formado")
